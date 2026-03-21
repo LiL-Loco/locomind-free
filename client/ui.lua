@@ -1,0 +1,2 @@
+-- client/ui.lua
+-- Placeholder for future UI helpers
