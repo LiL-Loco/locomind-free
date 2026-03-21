@@ -18,6 +18,7 @@ client_scripts {
 
 server_scripts {
     '@oxmysql/lib/MySQL.lua', -- optional, only needed for future logging
+    'server/tts.lua',
     'server/main.lua',
 }
 

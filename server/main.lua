@@ -59,7 +59,6 @@ RegisterNetEvent('locomind:askNPC', function(data)
             }
         }
     })
-
     -- Build headers
     local headers = { ['Content-Type'] = 'application/json' }
 
@@ -78,10 +77,23 @@ RegisterNetEvent('locomind:askNPC', function(data)
             local ok, response = pcall(json.decode, responseBody)
             if ok and response and response.choices and response.choices[1] then
                 local reply = response.choices[1].message.content
-                TriggerClientEvent('locomind:npcResponse', src, {
-                    npcName = data.npcName,
-                    message = reply
-                })
+
+                -- Synthesize speech if TTS enabled
+                if Config.TTS and Config.TTS.Enabled and Config.TTS.Provider ~= "none" then
+                    local voice = data.voice or Config.DefaultVoice
+                    SynthesizeSpeech(src, reply, voice, function(audioB64)
+                        TriggerClientEvent('locomind:npcResponse', src, {
+                            npcName  = data.npcName,
+                            message  = reply,
+                            audioB64 = audioB64,  -- nil if TTS failed, chat-only fallback
+                        })
+                    end)
+                else
+                    TriggerClientEvent('locomind:npcResponse', src, {
+                        npcName = data.npcName,
+                        message = reply,
+                    })
+                end
             else
                 print('^1[LocoMind] Failed to parse API response^0')
                 TriggerClientEvent('locomind:npcResponse', src, {

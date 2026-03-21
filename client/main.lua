@@ -95,8 +95,9 @@ end)
 -- Receive NPC response from server
 RegisterNetEvent('locomind:npcResponse', function(data)
     SendNUIMessage({
-        action = 'npcResponse',
-        npcName = data.npcName,
-        message = data.message,
+        action   = 'npcResponse',
+        npcName  = data.npcName,
+        message  = data.message,
+        audioB64 = data.audioB64,  -- optional base64 mp3
     })
 end)

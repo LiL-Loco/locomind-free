@@ -1,0 +1,11 @@
+{
+  "name": "locomind-tts-sidecar",
+  "version": "1.0.0",
+  "description": "edge-tts sidecar for LocoMind Free — converts text to speech and returns base64 mp3",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "install-tts": "pip install edge-tts"
+  },
+  "dependencies": {}
+}

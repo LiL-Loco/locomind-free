@@ -22,6 +22,13 @@ window.addEventListener('message', function(event) {
         waiting = false;
         document.getElementById('send-btn').disabled = false;
         document.getElementById('chat-input').focus();
+
+        // Play voice if audio data provided
+        if (data.audioB64 && data.audioB64.length > 10) {
+            const audio = document.getElementById('npc-voice');
+            audio.src = 'data:audio/mpeg;base64,' + data.audioB64;
+            audio.play().catch(() => {}); // ignore autoplay block errors
+        }
     }
 });
 

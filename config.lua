@@ -65,6 +65,49 @@ Config.ProviderURLs = {
     custom     = nil,   -- read from locomind_base_url convar
 }
 
+-- ============================================================
+--  TTS (TEXT-TO-SPEECH) CONFIGURATION
+--  NPCs can speak their responses aloud. Pick a provider below.
+-- ============================================================
+
+--[[
+    AVAILABLE TTS PROVIDERS:
+
+    "none"          → No voice. Text chat only. (default, zero cost)
+
+    "edge-tts"      → Microsoft Edge TTS — FREE, 400+ voices, no API key needed
+                      Requires: locomind-tts-sidecar running on the server
+                      (Node.js helper, included in /sidecar/)
+                      server.cfg: set locomind_tts_url "http://localhost:3210"
+                      Voices: "en-US-GuyNeural", "en-US-JennyNeural",
+                              "de-DE-ConradNeural", "fr-FR-HenriNeural" etc.
+                      Full list: https://bit.ly/edge-tts-voices
+
+    "openai"        → OpenAI TTS — Paid (~$15/1M characters)
+                      server.cfg: set locomind_tts_key "sk-..."
+                      Voices: alloy, echo, fable, onyx, nova, shimmer
+
+    "elevenlabs"    → ElevenLabs — FREE tier (10,000 chars/month), Paid for more
+                      Get key: https://elevenlabs.io
+                      server.cfg: set locomind_tts_key "your-key"
+                      Voices: use voice ID from ElevenLabs dashboard
+
+    "nvidia-riva"   → NVIDIA Riva TTS — Self-hosted, FREE
+                      Requires: NVIDIA GPU + Riva NIM running locally
+                      server.cfg: set locomind_tts_url "http://localhost:8080"
+                      Voices: "English-US.Male-1", "English-US.Female-1" etc.
+]]--
+
+Config.TTS = {
+    Provider = "none",             -- Set to "edge-tts", "openai", "elevenlabs", "nvidia-riva", or "none"
+    Enabled  = false,              -- Set to true to enable voice
+}
+
+-- Per-NPC voice assignment (optional)
+-- If not set, the NPC will use the default voice for the provider.
+-- edge-tts voices: https://bit.ly/edge-tts-voices
+Config.DefaultVoice = "en-US-GuyNeural"    -- Male English (edge-tts default)
+
 -- UI
 Config.NpcColor    = {r=0,   g=180, b=255, a=255}
 Config.PlayerColor = {r=255, g=255, b=255, a=255}
@@ -83,6 +126,7 @@ Config.NPCs = {
         model   = "a_m_m_skater_01",
         heading = 250.0,
         persona = "You are Tommy, a shady used car dealer hanging around Legion Square. You speak in short, casual sentences, always nervous and looking over your shoulder. You hint at knowing where to get cheap cars.",
+        voice   = "en-US-GuyNeural",     -- edge-tts voice for this NPC
         blip = {
             sprite = 280,  -- info icon
             color  = 5,    -- yellow
@@ -97,6 +141,7 @@ Config.NPCs = {
         model   = "s_m_y_cop_01",
         heading = 180.0,
         persona = "You are Officer Martinez, a tired but honest LSPD cop outside the Pillbox precinct. You speak professionally with world-weary undertones. You don't tolerate disrespect but appreciate honesty.",
+        voice   = "en-US-ChristopherNeural",  -- deeper male voice for cop
         blip = {
             sprite = 280,
             color  = 3,    -- blue
