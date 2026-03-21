@@ -86,7 +86,7 @@ Config.NPCs = {
         blip = {
             sprite = 280,  -- info icon
             color  = 5,    -- yellow
-            scale  = 0.8,
+            scale  = 0.7,
             label  = "Tommy",
         },
     },
@@ -100,7 +100,7 @@ Config.NPCs = {
         blip = {
             sprite = 280,
             color  = 3,    -- blue
-            scale  = 0.8,
+            scale  = 0.7,
             label  = "Officer Martinez",
         },
     },
@@ -118,7 +118,7 @@ Config.NPCs = {
     --     blip = {
     --         sprite = 280,
     --         color  = 2,   -- green
-    --         scale  = 0.8,
+    --         scale  = 0.7,
     --         label  = "YourNPC",
     --     },
     --     -- blip = false,  -- uncomment to hide this NPC from the map
