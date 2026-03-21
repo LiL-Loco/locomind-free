@@ -2,7 +2,7 @@ local spawnedNPCs = {}
 local activeNPC = nil
 local chatOpen = false
 
--- Spawn all configured NPCs
+-- Spawn all configured NPCs + blips
 CreateThread(function()
     for _, npc in ipairs(Config.NPCs) do
         RequestModel(GetHashKey(npc.model))
@@ -16,8 +16,22 @@ CreateThread(function()
         FreezeEntityPosition(ped, true)
         SetPedFleeAttributes(ped, 0, false)
         SetPedCombatAttributes(ped, 46, true)
+        SetModelAsNoLongerNeeded(GetHashKey(npc.model))
 
-        table.insert(spawnedNPCs, { ped = ped, data = npc })
+        -- Spawn map blip (unless blip = false)
+        local blip = nil
+        if npc.blip ~= false and type(npc.blip) == "table" then
+            blip = AddBlipForCoord(npc.coords.x, npc.coords.y, npc.coords.z)
+            SetBlipSprite(blip, npc.blip.sprite or 280)
+            SetBlipColour(blip, npc.blip.color or 5)
+            SetBlipScale(blip, npc.blip.scale or 0.8)
+            SetBlipAsShortRange(blip, true)
+            BeginTextCommandSetBlipName("STRING")
+            AddTextComponentSubstringPlayerName(npc.blip.label or npc.name)
+            EndTextCommandSetBlipName(blip)
+        end
+
+        table.insert(spawnedNPCs, { ped = ped, blip = blip, data = npc })
     end
 end)
 

@@ -73,27 +73,54 @@ Config.PlayerColor = {r=255, g=255, b=255, a=255}
 --  NPC DEFINITIONS
 -- ============================================================
 
+-- Blip sprites: https://docs.fivem.net/game-references/blips/
+-- Blip colors:  https://docs.fivem.net/game-references/blips/#blip-colors
 Config.NPCs = {
     {
         name    = "Tommy",
-        coords  = vector3(123.4, 456.7, 78.9),
+        -- Legion Square — well-known RP hotspot in Los Santos
+        coords  = vector3(195.17, -933.77, 30.69),
         model   = "a_m_m_skater_01",
-        heading = 180.0,
-        persona = "You are Tommy, a shady used car dealer on the east side of Los Santos. You speak in short, casual sentences. You're always nervous and looking over your shoulder.",
+        heading = 250.0,
+        persona = "You are Tommy, a shady used car dealer hanging around Legion Square. You speak in short, casual sentences, always nervous and looking over your shoulder. You hint at knowing where to get cheap cars.",
+        blip = {
+            sprite = 280,  -- info icon
+            color  = 5,    -- yellow
+            scale  = 0.8,
+            label  = "Tommy",
+        },
     },
     {
         name    = "Officer Martinez",
-        coords  = vector3(-456.1, 234.5, 45.2),
+        -- Outside LSPD Pillbox area
+        coords  = vector3(428.52, -979.43, 30.71),
         model   = "s_m_y_cop_01",
-        heading = 90.0,
-        persona = "You are Officer Martinez, a tired but honest LSPD cop who has seen too much. You speak professionally but with a hint of world-weariness. You don't tolerate disrespect.",
+        heading = 180.0,
+        persona = "You are Officer Martinez, a tired but honest LSPD cop outside the Pillbox precinct. You speak professionally with world-weary undertones. You don't tolerate disrespect but appreciate honesty.",
+        blip = {
+            sprite = 280,
+            color  = 3,    -- blue
+            scale  = 0.8,
+            label  = "Officer Martinez",
+        },
     },
-    -- Add your own NPCs here:
+    -- -------------------------------------------------------
+    -- Add your own NPCs here.
+    -- Tip: use the F8 console command "coord" in-game to get
+    -- your current position as a vector3.
+    -- -------------------------------------------------------
     -- {
     --     name    = "YourNPC",
     --     coords  = vector3(x, y, z),
     --     model   = "ped_model_name",
     --     heading = 0.0,
     --     persona = "Your character description here.",
+    --     blip = {
+    --         sprite = 280,
+    --         color  = 2,   -- green
+    --         scale  = 0.8,
+    --         label  = "YourNPC",
+    --     },
+    --     -- blip = false,  -- uncomment to hide this NPC from the map
     -- },
 }
