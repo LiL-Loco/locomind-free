@@ -4,12 +4,15 @@ window.addEventListener('message', function(event) {
     const data = event.data;
 
     if (data.action === 'openChat') {
-        document.getElementById('npc-name').textContent = data.npcName;
+        const name = data.npcName || 'NPC';
+        document.getElementById('npc-name').textContent = name;
+        document.getElementById('npc-initial').textContent = name.charAt(0).toUpperCase();
         document.getElementById('chat-container').classList.remove('hidden');
         document.getElementById('chat-messages').innerHTML = '';
         document.getElementById('chat-input').value = '';
         document.getElementById('chat-input').focus();
         waiting = false;
+        document.getElementById('send-btn').disabled = false;
     }
 
     if (data.action === 'closeChat') {
@@ -23,11 +26,14 @@ window.addEventListener('message', function(event) {
         document.getElementById('send-btn').disabled = false;
         document.getElementById('chat-input').focus();
 
-        // Play voice if audio data provided
+        // Play voice if available, silent fallback to text
         if (data.audioB64 && data.audioB64.length > 10) {
             const audio = document.getElementById('npc-voice');
             audio.src = 'data:audio/mpeg;base64,' + data.audioB64;
-            audio.play().catch(() => {}); // ignore autoplay block errors
+            audio.volume = 1.0;
+            audio.play().catch(() => {
+                // Autoplay blocked — text already visible, no action needed
+            });
         }
     }
 });
@@ -42,14 +48,13 @@ function sendMessage() {
     input.value = '';
     waiting = true;
     document.getElementById('send-btn').disabled = true;
-
     addTyping();
 
     fetch('https://locomind-free/sendMessage', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ message })
-    });
+    }).catch(() => {});
 }
 
 function closeChat() {
@@ -57,14 +62,17 @@ function closeChat() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({})
-    });
+    }).catch(() => {});
 }
 
 function addMessage(sender, text, type) {
     const msgs = document.getElementById('chat-messages');
     const div = document.createElement('div');
     div.className = 'message ' + type;
-    div.innerHTML = `<div class="sender">${escapeHtml(sender)}</div><div>${escapeHtml(text)}</div>`;
+    div.innerHTML = `
+        <div class="sender">${escapeHtml(sender)}</div>
+        <div class="bubble">${escapeHtml(text)}</div>
+    `;
     msgs.appendChild(div);
     msgs.scrollTop = msgs.scrollHeight;
 }
@@ -72,9 +80,13 @@ function addMessage(sender, text, type) {
 function addTyping() {
     const msgs = document.getElementById('chat-messages');
     const div = document.createElement('div');
-    div.className = 'typing';
+    div.className = 'typing-bubble';
     div.id = 'typing-indicator';
-    div.textContent = document.getElementById('npc-name').textContent + ' is typing...';
+    div.innerHTML = `
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+        <div class="typing-dot"></div>
+    `;
     msgs.appendChild(div);
     msgs.scrollTop = msgs.scrollHeight;
 }
@@ -85,11 +97,19 @@ function removeTyping() {
 }
 
 function escapeHtml(str) {
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
 }
 
-// Enter key to send
 document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') closeChat();
-    if (e.key === 'Enter') sendMessage();
+    if (e.key === 'Enter') {
+        const input = document.getElementById('chat-input');
+        if (document.activeElement === input || !document.getElementById('chat-container').classList.contains('hidden')) {
+            sendMessage();
+        }
+    }
 });
