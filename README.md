@@ -1,84 +1,174 @@
-# LocoMind Free — AI NPCs for FiveM
+# LocoMind Free — AI NPC Conversations for FiveM
 
-> Give your NPCs a voice. Powered by OpenAI.
+> Your NPCs now talk back. Powered by AI. Free forever.
 
-LocoMind Free is an open-source FiveM script that lets players have real conversations with NPCs using ChatGPT. No memory, no cloud dependency — just your OpenAI API key and a config file.
+LocoMind Free is an open-source FiveM script that gives NPCs a real voice — players can have dynamic conversations with any NPC on your server. No static menus. No scripted dialogues. Just real AI responses, in character.
 
-**Want persistent NPC memory, server-context awareness, and a full admin dashboard?**
-→ Check out **[LocoMind Pro](https://locomind.dev)** — the SaaS backend for serious RP servers.
+**Free providers supported out of the box — no forced subscriptions.**
+
+![LocoMind Banner](https://raw.githubusercontent.com/LiL-Loco/locomind-free/main/locomind-banner-2k.png)
 
 ---
 
 ## Features
 
-- 💬 Text-based chat with any NPC
-- 🤖 GPT-4o mini powered responses
-- 🎭 Custom NPC personas via config
-- ⚡ Standalone — works with ESX, QBCore, or any framework
-- 🔒 Your OpenAI key stays on your server
+- 💬 **Dynamic NPC conversations** — NPCs respond naturally, in character
+- 🔊 **Voice responses** — NPCs can speak aloud via edge-tts (free), ElevenLabs, or OpenAI TTS
+- ⚡ **Free AI providers** — Groq, OpenRouter, NVIDIA NIM, Ollama — no OpenAI required
+- 🎭 **Custom personas** — unique personality per NPC
+- 🗺 **Map blips** — configurable per NPC (sprite, color, scale, label)
+- 🧩 **Any framework** — ESX, QBCore, standalone
+- 🔒 **Your keys stay on your server** — no cloud dependency
 - 0.0ms idle resource usage
 
-## Requirements
+---
 
-- FiveM server (artifact 6683+)
-- OpenAI API Key → [platform.openai.com](https://platform.openai.com)
-- ox_target or qb-target (optional, for interaction)
+## Supported AI Providers
+
+| Provider | Cost | Speed | Setup |
+|---|---|---|---|
+| **Groq** ⭐ | 🟢 Free tier | Blazing fast | [console.groq.com](https://console.groq.com) |
+| **OpenRouter** | 🟢 Free models | Fast | [openrouter.ai](https://openrouter.ai) |
+| **NVIDIA NIM** | 🟢 Free credits | Fast | [build.nvidia.com](https://build.nvidia.com) |
+| **Ollama** | 🟢 Local, free | Depends on HW | Self-hosted |
+| **OpenAI** | 💛 Paid | Fast | [platform.openai.com](https://platform.openai.com) |
+| **Custom** | — | — | Any OpenAI-compatible API |
+
+## Supported TTS Providers
+
+| Provider | Cost | Quality | Setup |
+|---|---|---|---|
+| **edge-tts** ⭐ | 🟢 Free | ⭐⭐⭐⭐ | `pip install edge-tts` + sidecar |
+| **ElevenLabs** | 🟡 Free tier / Paid | ⭐⭐⭐⭐⭐ | [elevenlabs.io](https://elevenlabs.io) |
+| **OpenAI TTS** | 💛 Paid | ⭐⭐⭐⭐⭐ | OpenAI API key |
+| **NVIDIA Riva** | 🟢 Self-hosted | ⭐⭐⭐⭐ | NVIDIA GPU server |
+| **None** | — | Text only | Default |
+
+---
 
 ## Installation
 
-1. Download and place `locomind-free` in your `resources` folder
-2. Add `ensure locomind-free` to your `server.cfg`
-3. Set your OpenAI API key in `server.cfg`:
+1. Drop `locomind-free` into your `resources` folder
+2. Add to `server.cfg`:
    ```
-   set locomind_api_key "sk-your-key-here"
+   ensure locomind-free
    ```
-4. Configure NPCs in `config.lua`
-5. Restart server
+3. Set your AI provider key in `server.cfg`:
+   ```
+   # Groq (recommended — free)
+   set locomind_api_key "gsk_your-groq-key"
+   set locomind_provider "groq"
 
-## Usage
+   # Optional: TTS voice (edge-tts sidecar)
+   set locomind_tts_url "http://localhost:3210"
+   ```
+4. Configure your NPCs in `config.lua`
+5. Restart server — done
 
-Walk up to a configured NPC and press `E` to talk.
-Type your message — the NPC responds in character.
+---
+
+## Voice Setup (Optional)
+
+To enable voice responses (NPCs speak aloud):
+
+```bash
+# 1. Install edge-tts
+pip install edge-tts
+
+# 2. Start the sidecar (in your server directory or as a service)
+node resources/locomind-free/sidecar/index.js
+```
+
+Then in `config.lua`:
+```lua
+Config.TTS = {
+    Provider = "edge-tts",
+    Enabled  = true,
+}
+```
+
+400+ voices available — British, American, German, French, Spanish and more.
+Full voice list: `edge-tts --list-voices`
+
+---
 
 ## Configuration
 
 ```lua
--- config.lua
-Config = {}
+Config.Provider    = "groq"           -- groq | openrouter | nvidia | ollama | openai | custom
+Config.Model       = "llama-3.1-8b-instant"
+Config.InteractKey = 38               -- E key
+Config.InteractDistance = 2.5         -- meters
 
-Config.InteractKey = 38        -- E key
-Config.InteractDistance = 2.5  -- meters
-Config.Model = "gpt-4o-mini"   -- OpenAI model
+Config.TTS = {
+    Provider = "none",                -- none | edge-tts | openai | elevenlabs | nvidia-riva
+    Enabled  = false,
+}
 
 Config.NPCs = {
     {
-        name = "Tommy",
-        coords = vector3(123.4, 456.7, 78.9),
-        model = "a_m_m_skater_01",
-        persona = "You are Tommy, a shady car dealer in Los Santos. You speak casually, are slightly nervous, and always trying to make a deal. Keep responses under 2 sentences.",
-        heading = 180.0,
+        name    = "Tommy",
+        model   = "a_m_m_skater_01",
+        coords  = vector3(195.17, -933.77, 30.69),
+        heading = 250.0,
+        persona = "You are Tommy, a shady used car dealer in Legion Square. Nervous, always looking over your shoulder. Keep responses under 2 sentences.",
+        voice   = "en-US-GuyNeural",
+        blip = {
+            sprite = 1, color = 5, scale = 0.7,
+            label  = "Tommy",
+        },
     },
-    -- Add more NPCs here
 }
 ```
 
-## Comparison
+---
 
-| Feature | LocoMind Free | LocoMind Pro |
+## How It Works
+
+```
+Player presses E near NPC
+        ↓
+Chat UI opens (dark, sleek)
+        ↓
+Player types message
+        ↓
+Server sends to AI provider (Groq / OpenRouter / etc.)
+        ↓
+NPC responds dynamically, in character
+        ↓
+[If TTS enabled] NPC speaks the response aloud
+        ↓
+Text always shown as fallback
+```
+
+---
+
+## LocoMind Free vs Pro
+
+| Feature | Free | Pro |
 |---|---|---|
-| NPC Chat (GPT) | ✅ | ✅ |
-| Custom Personas | ✅ | ✅ |
-| Persistent NPC Memory | ❌ | ✅ |
-| Server-Context Awareness | ❌ | ✅ |
-| Player-NPC Relationships | ❌ | ✅ |
-| Admin Dashboard | ❌ | ✅ |
-| Multi-NPC Communication | ❌ | ✅ |
+| Dynamic NPC conversations | ✅ | ✅ |
+| Voice responses (TTS) | ✅ | ✅ |
+| Free AI providers | ✅ | ✅ |
+| Custom personas | ✅ | ✅ |
+| Map blips | ✅ | ✅ |
+| Persistent NPC memory | ❌ | ✅ |
+| NPCs remember players | ❌ | ✅ |
+| Server-context awareness | ❌ | ✅ |
+| Player–NPC relationships | ❌ | ✅ |
+| Multi-NPC communication | ❌ | ✅ |
+| Admin dashboard | ❌ | ✅ |
+| Analytics | ❌ | ✅ |
 | Support | Community | Priority |
-| Price | Free | From €19/mo |
+| Price | **Free** | From €19/mo |
+
+→ **[LocoMind Pro — coming soon](https://locomind.it)**
+
+---
 
 ## Credits
 
-Built by **[ThaLoco0ne](https://locomind.dev)** — FiveM developer & creator of LocoMind.
+Built by **[ThaLoco0ne](https://github.com/LiL-Loco)** — FiveM developer.
 
 ## License
 
