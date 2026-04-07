@@ -143,29 +143,6 @@ Text always shown as fallback
 
 ---
 
-## LocoMind Free vs Pro
-
-| Feature | Free | Pro |
-|---|---|---|
-| Dynamic NPC conversations | ✅ | ✅ |
-| Voice responses (TTS) | ✅ | ✅ |
-| Free AI providers | ✅ | ✅ |
-| Custom personas | ✅ | ✅ |
-| Map blips | ✅ | ✅ |
-| Persistent NPC memory | ❌ | ✅ |
-| NPCs remember players | ❌ | ✅ |
-| Server-context awareness | ❌ | ✅ |
-| Player–NPC relationships | ❌ | ✅ |
-| Multi-NPC communication | ❌ | ✅ |
-| Admin dashboard | ❌ | ✅ |
-| Analytics | ❌ | ✅ |
-| Support | Community | Priority |
-| Price | **Free** | From €19/mo |
-
-→ **[LocoMind Pro — coming soon](https://locomind.it)**
-
----
-
 ## Credits
 
 Built by **[ThaLoco0ne](https://github.com/LiL-Loco)** — FiveM developer.
